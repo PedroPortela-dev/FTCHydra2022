@@ -67,6 +67,7 @@ public class OFC extends LinearOpMode {
     double  MIN_PALETA = 0;
     double  MAX_PALETA = 1;
     double  speedPaleta = 0.01;
+    int position = 0;
 
     BNO055IMU imu;
 
@@ -287,7 +288,8 @@ public class OFC extends LinearOpMode {
                 }
             }
             
-            ML.setTargetPosition(40);
+            position = gamepad2.dpad_up?70:gamepad2.dpad_down?0:position;
+            ML.setTargetPosition(position);
             ML.setPower(1);
             ML.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
