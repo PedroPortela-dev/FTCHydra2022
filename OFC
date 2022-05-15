@@ -67,6 +67,7 @@ public class OFC extends LinearOpMode {
     double  MIN_PALETA = 0;
     double  MAX_PALETA = 1;
     double  speedPaleta = 0.01;
+    int position = 0;
 
     BNO055IMU imu;
 
@@ -160,7 +161,7 @@ public class OFC extends LinearOpMode {
 //========================================== CONTROLE - 1 ==========================================
 
             //Control Speed
-            speed = gamepad1.b ? 1 : gamepad1.a ? 0.5 : gamepad1.x ?0.25:speed ;
+            speed = gamepad1.b ? 1 : gamepad1.a ? 0.5 : gamepad1.x ?0.25:speed;
 
 //            if (gamepad1.dpad_up){
 //                setPowerGravado();
@@ -270,11 +271,13 @@ public class OFC extends LinearOpMode {
 
             servoLagosta = Range.clip(servoLagosta, MIN_PALETA, MAX_PALETA);
             SL.setPosition(servoLagosta);
+            // para o braço subir
             speedBraco = gamepad2.b ? 0.5 : gamepad2.x ? 0.15 : gamepad2.y ? 0.3 : speedBraco;
 
             telemetry.addData("Braço - ",MB.getCurrentPosition());
 
 //========================================SET POWER MOTORS==========================================
+            // para voltar
             if(gamepad2.a){
                 MB.setPower(-0.1);
                 sleep(250);
@@ -284,16 +287,11 @@ public class OFC extends LinearOpMode {
                     MB.setPower(-0.1);
                 }
             }
-            if(gamepad2.right_trigger > 0){
-                ML.setPower(gamepad2.right_trigger * 0.2);
-            }
-            else if (gamepad2.left_trigger > 0){
-                ML.setPower(-gamepad2.left_trigger * 0.2);
-            }
-            else{
-                ML.setPower(0);
-                //                ML.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            }
+            
+            position = gamepad2.dpad_up?70:gamepad2.dpad_down?0:position;
+            ML.setTargetPosition(position);
+            ML.setPower(1);
+            ML.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             RMF.setPower((fMD-x2) * speed);
             LMF.setPower((fME+x2) * speed);
